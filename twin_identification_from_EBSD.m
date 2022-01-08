@@ -562,6 +562,9 @@ for iE = 0:iE_max
                 
                 % modify the overlapped part of this twin grain to have a new ID
                 ID_updated(inds) = next_gID;
+                % Note: 2022-01-04: an improved method may be required to prevent forming new child grains with disconnected pixels  
+                % Method: for inds area, first do one-pass-label, then assign each 'grain' with a new 'next_gID'   
+                % But still, these [new isolated small] grains should be removed from twin identification analysis   
                 
                 % increment the next_gID
                 next_gID = next_gID + 1;
