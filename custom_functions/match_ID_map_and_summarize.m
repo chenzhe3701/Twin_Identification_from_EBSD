@@ -84,7 +84,7 @@ gCenterX_more_gb = accumX./accumNumPts; % reculculate grain center directly from
 gCenterY_more_gb = accumY./accumNumPts;
 
 gArea_more_gb = accumNumPts * umPerDp * umPerDp;
-gDiameter_more_gb = (4 * gArea_more_gb).^(0.5);
+gDiameter_more_gb = (4 * gArea_more_gb / pi).^(0.5);    % correct, 2022-01-08
 
 gEdge_more_gb = ones(size(gID_more_gb));
 ind = ismember(gID_more_gb, ids_interior);      % index indicating interior grains
