@@ -14,7 +14,7 @@ assert(exist('ID_list','var')==1);
 assert(exist('tolerance_cell','var')==1);
 assert(exist('ID_merge_list','var')==1);
 
-save_dir = [working_dir, '\analysis'];
+save_dir = fullfile(working_dir, 'analysis');
 mkdir(save_dir);
 %% Step-1: load .txt grain files, align_euler_to_sample and save as .mat
 
@@ -125,7 +125,7 @@ end
 % copyfile(fullfile(save_dir, [sample_name,'_grain_file_iE_0.mat']), fullfile(save_dir, [sample_name,'_parent_grain_file_iE_0.mat']), 'f');
 
 % save a copy after step 1
-save_dir_1 = [save_dir,'\step-1'];
+save_dir_1 = fullfile(save_dir, 'step-1');
 mkdir(save_dir_1);
 for iE = 0:iE_max
     copyfile(fullfile(save_dir, [sample_name,'_grain_file_iE_',num2str(iE),'.mat']), ...
@@ -481,7 +481,7 @@ gArea = data_out.gArea;
 gEdge = data_out.gEdge;
 gNeighbors = data_out.gNeighbors;
 
-save_dir_2 = [save_dir,'\step-2'];
+save_dir_2 = fullfile(save_dir, 'step-2');
 mkdir(save_dir_2);
 
 save(fullfile(save_dir_2, [sample_name,'_parent_grain_file_iE_',num2str(iE),'.mat']),'euler_aligned_to_sample','ID','phi1','phi','phi2','x','y',...
@@ -612,7 +612,7 @@ for iE = 0:iE_max
     gEdge = data_out.gEdge;
     gNeighbors = data_out.gNeighbors;
     
-    save_dir_2 = [save_dir,'\step-2'];
+    save_dir_2 = fullfile(save_dir, 'step-2');
     mkdir(save_dir_2);
     
     save(fullfile(save_dir_2, [sample_name,'_grain_file_iE_',num2str(iE),'.mat']),'euler_aligned_to_sample','ID','phi1','phi','phi2','x','y',...
@@ -748,7 +748,7 @@ for iE = 0:iE_max
 end
 id_to_add = 10^(ceil(log10(maxID)));    % round to 1000 etc for adjustment. 
 
-save_dir_4 = [save_dir,'\step-4'];
+save_dir_4 = fullfile(save_dir, 'step-4');
 mkdir(save_dir_4);
 
 for iE = 0:iE_max
@@ -960,7 +960,7 @@ for iE = 0:iE_max
     variant_point_wise{iB} = ID_variant_point_wise;
     
     % After processing this iE, Update the modified CHILD grain data and save
-    save_dir_5 = [save_dir,'\step-5'];
+    save_dir_5 = fullfile(save_dir, 'step-5');
     mkdir(save_dir_5);
     
     copyfile(fullfile(save_dir, [sample_name,'_grain_file_iE_',num2str(iE),'.mat']), ...
