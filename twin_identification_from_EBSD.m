@@ -147,6 +147,7 @@ for iE = 0:iE_max
     saveas(gcf, fullfile(working_dir,'analysis',['A1 original ID map iE=',num2str(iE),'.fig']));    
     close;
     myplot(auto_grain(ID), boundary);
+    title(['iE=',num2str(iE)],'fontweight','normal');
     print(fullfile(save_dir, ['A2 auto grain map iE=',num2str(iE),'.tif']),'-r300','-dtiff');
     close;
 end
@@ -877,12 +878,14 @@ for iE = 0:iE_max
 
 
     myplot(x,y, ID_variant_grain_wise, boundary_p); caxis([0 6]);
+    make_variant_map_background('tickOff',false);
     set(gca,'fontsize',18);
     title(['iE=',num2str(iE)],'fontweight','normal');
     print(fullfile(save_dir,['variant_grain_wise_iE=',num2str(iE),'.tif']),'-dtiff');
     close;
 
     myplot(x,y, ID_variant_point_wise, boundary_p); caxis([0 6]);
+    make_variant_map_background('tickOff',false);
     set(gca,'fontsize',18);
     title(['iE=',num2str(iE)],'fontweight','normal');
     print(fullfile(save_dir,['variant_pt_wise_iE=',num2str(iE),'.tif']),'-dtiff');
