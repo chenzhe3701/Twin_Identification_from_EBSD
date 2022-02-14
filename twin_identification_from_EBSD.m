@@ -138,17 +138,26 @@ end
 % [optionally but suggested] plot ID map and manually select control IDs
 % for alignment, and save to variable 'grain_pair', where each row contains
 % the control IDs at each load step
+run(fullfile(p_setting,f_setting));
 for iE = 0:iE_max
+    iB = iE + 1;
     d = load(fullfile(save_dir, [sample_name,'_parent_grain_file_iE_',num2str(iE),'.mat']));
     ID = d.ID;
+    x = d.x;
+    y = d.y;
     boundary = find_one_boundary_from_ID_matrix(ID);
-    myplot(ID, boundary);
+    myplot(x,y,ID, boundary);
+    % if have control IDs, label them on map
+    try
+       label_map_with_ID(x,y,ID,gcf,grain_pair(iB,:),'r',12,1); 
+    end
     title(['iE=',num2str(iE)],'fontweight','normal');
-    saveas(gcf, fullfile(working_dir,'analysis',['A1 original ID map iE=',num2str(iE),'.fig']));    
+    saveas(gcf, fullfile(working_dir,'analysis',['A1 original ID map iE=',num2str(iE),'.fig']));  
+    print(fullfile(working_dir,'analysis',['A2 original ID map iE=',num2str(iE),'.tif']), '-dtiff');
     close;
     myplot(auto_grain(ID), boundary);
     title(['iE=',num2str(iE)],'fontweight','normal');
-    print(fullfile(save_dir, ['A2 auto grain map iE=',num2str(iE),'.tif']),'-r300','-dtiff');
+    print(fullfile(save_dir, ['A3 auto grain map iE=',num2str(iE),'.tif']),'-r300','-dtiff');
     close;
 end
 
@@ -161,6 +170,8 @@ for iE = 0:iE_max
     % reference, iE=0
     d = matfile(fullfile(save_dir, [sample_name,'_parent_grain_file_iE_0.mat']));
     ID_0 = d.ID;
+    x_0 = d.x;
+    y_0 = d.y;
     % deformed iE
     d = load(fullfile(save_dir, [sample_name,'_parent_grain_file_iE_',num2str(iE),'.mat']));
     ID = d.ID;
@@ -174,7 +185,7 @@ for iE = 0:iE_max
     catch
         control_IDs = [];
     end
-    [tform, return_state] = align_ID_maps(ID_0, ID, control_IDs);
+    [tform, return_state] = align_ID_maps(ID_0, ID, control_IDs, x_0,y_0, x,y);
     tform_temp{iB} = tform; % store this in a cell
 
     % affine transform based on the determined 'tform'
@@ -204,7 +215,7 @@ assert(exist('tolerance_cell','var')==1);
 for iE = []%0:iE_max
     iB = iE + 1;
     ID_iB_to_1 = ID_cell{iB};
-    f = myplot(auto_grain(ID_iB_to_1)-6,boundary_all);
+    f = myplot(x,y,auto_grain(ID_iB_to_1)-6,boundary_all);
     title(['iE=',num2str(iE),', select grain to divide, double click to confirm, X to exist.'],'fontweight','normal');
     caxis([-5 -1]);
     % draw existing ones
@@ -235,8 +246,8 @@ assert(exist('ID_merge_list','var')==1);
 for iE = []%0:iE_max
     iB = iE + 1;
     ID_iB_to_1 = ID_cell{iB};
-    f = myplot(auto_grain(ID_iB_to_1)-6,boundary_all);
-    title(['Select grain to merge, red=from, white=to. Double click to confirm, X to exist.'],'fontweight','normal');
+    f = myplot(x,y,auto_grain(ID_iB_to_1)-6,boundary_all);
+    title(['iE=',num2str(iE),', select grain to merge, red=from, white=to. Double click to confirm, X to exist.'],'fontweight','normal');
     caxis([-5 -1]);
     % draw existing ones
     merge_list = ID_merge_list{iB};
@@ -586,8 +597,8 @@ run(fullfile(p_setting,f_setting));
 % reference, iE=0
 d = load(fullfile(save_dir, [sample_name,'_parent_grain_file_iE_0.mat']));
 
-x = d.x;
-y = d.y;
+x_0 = d.x;
+y_0 = d.y;
 ID_0 = d.ID;
 boundary_0 = find_one_boundary_from_ID_matrix(ID_0);
 gID_0 = d.gID;
@@ -602,7 +613,7 @@ for iE = 1:iE_max
     iB = iE + 1;
     disp(['iE=',num2str(iE)]);
     % load the modified EBSD data at iE
-    load(fullfile(save_dir, [sample_name,'_parent_grain_file_iE_',num2str(iE),'.mat']), 'ID','gID','gEdge','gCenterX','gCenterY');
+    load(fullfile(save_dir, [sample_name,'_parent_grain_file_iE_',num2str(iE),'.mat']), 'x','y','ID','gID','gEdge','gCenterX','gCenterY');
 
     try
         control_IDs = grain_pair([1,iB],:);
@@ -612,7 +623,7 @@ for iE = 1:iE_max
     [tform, return_state] = align_ID_maps(ID_0, ID, control_IDs);
     tforms{iB} = tform;     % save the tform
 
-    ID_0_to_iE = interp_data(x,y,ID_0, x,y,tform, 'interp', 'nearest');
+    ID_0_to_iE = interp_data(x_0,y_0,ID_0, x,y,tform, 'interp', 'nearest');
     boundary_0_to_iE = find_boundary_from_ID_matrix(ID_0_to_iE);
 
     [ID_new, id_link_additional, id_link] = hungarian_assign_ID_map(ID_0_to_iE, ID);

@@ -3,7 +3,7 @@
 % ID: ID map target
 % contro_IDs = 2-by-n matrix, control IDs on ID_0 map and ID map
 
-function [tform, return_state] = align_ID_maps(ID_0, ID, control_IDs)
+function [tform, return_state] = align_ID_maps(ID_0, ID, control_IDs, x_0,y_0, x,y)
 
 if ~exist('control_IDs','var')
     control_IDs = [];
@@ -11,12 +11,18 @@ end
 
 boundary_0 = find_one_boundary_from_ID_matrix(ID_0);
 % find gCenter positions
-[x,y] = meshgrid(1:size(ID,2),1:size(ID,1));  % create coordinates
+if ~exist('x','var')
+    [x_0,y_0] = meshgrid(1:size(ID_0,2),1:size(ID_0,1));  % create coordinates
+    [x,y] = meshgrid(1:size(ID,2),1:size(ID,1));  % create coordinates
+end
 
+gID_0 = accumarray(ID_0(:), ID_0(:))./accumarray(ID_0(:),1);
 gCenterX_0 = accumarray(ID_0(:), x(:))./accumarray(ID_0(:),1);
 gCenterY_0 = accumarray(ID_0(:), y(:))./accumarray(ID_0(:),1);
-gID_0 = unique(ID_0(:));
-ind = gID_0==0; % remove those with ID=0
+% (1) the gID might be 0, which is not what we want
+% (2) the gIDs might not be continues, so the # of points=0, and position
+% will be nan. We need to remove these rows, so the nRows equals nGrains
+ind = (gID_0==0)|(isnan(gID_0)); 
 gID_0(ind) = [];
 gCenterX_0(ind) = [];
 gCenterY_0(ind) = [];
@@ -27,17 +33,10 @@ a4 = unique(ID_0(:,end));
 gEdge_0 = unique([a1(:);a2(:);a3(:);a4(:)]);
 gEdge_0 = ismember(gID_0,gEdge_0);
 
+gID = accumarray(ID(:), ID(:))./accumarray(ID(:),1);
 gCenterX = accumarray(ID(:), x(:))./accumarray(ID(:),1);
 gCenterY = accumarray(ID(:), y(:))./accumarray(ID(:),1);
-% the gIDs might not be continues, so the # of points=0, and position
-% will be nan. We need to remove these rows, so the nRows equals
-% nGrains
-ir = isnan(gCenterX) | isnan(gCenterY);
-gCenterX(ir,:) = [];
-gCenterY(ir,:) = [];
-
-gID = unique(ID(:));
-ind = gID==0; % remove those with ID=0
+ind = (gID==0)|(isnan(gID)); 
 gID(ind) = [];
 gCenterX(ind) = [];
 gCenterY(ind) = [];
@@ -66,8 +65,8 @@ while true
     if isempty(control_IDs)
         tform = fitgeotrans([0 0; 0 1; 1 0], [0 0; 0 1; 1 0], 'affine');
         % find grains closest to the cetner as initial control points
-        midx = size(ID,2)/2;
-        midy = size(ID,1)/2;
+        midx = mean(x(:))/2;
+        midy = mean(y(:))/2;
         [~,inds] = sort(pdist2([gCenterX,gCenterY],[midx,midy],'euclidean'));
         control_IDs(2,:) = gID(inds(1:3));
     else
@@ -80,7 +79,7 @@ while true
         tform = fitgeotrans(cpFrom, cpTo, 'affine');    % [x_0, y_0, 1] * tform.T = [x_iE, y_iE, 1]
     end
 
-    ID_0_to_iE = interp_data(x,y,ID_0, x,y,tform, 'interp', 'nearest');
+    ID_0_to_iE = interp_data(x_0,y_0,ID_0, x,y,tform, 'interp', 'nearest');
 
     [ID_new, id_link_additional, id_link] = hungarian_assign_ID_map(ID_0_to_iE, ID);
 
@@ -155,7 +154,7 @@ if 0
     % [1st] rough tform. The tform is to transform the [ref @ iE=0] to [deformed iE>0]
     tform = fitgeotrans(cpFrom, cpTo, 'affine');    % [x_0, y_0, 1] * tform.T = [x_iE, y_iE, 1]
 
-    ID_0_to_iE = interp_data(x,y,ID_0, x,y,tform, 'interp', 'nearest');
+    ID_0_to_iE = interp_data(x_0,y_0,ID_0, x,y, tform, 'interp', 'nearest');
     boundary_0_to_iE = find_boundary_from_ID_matrix(ID_0_to_iE);
 
     [ID_new, id_link_additional, id_link] = hungarian_assign_ID_map(ID_0_to_iE, ID);
