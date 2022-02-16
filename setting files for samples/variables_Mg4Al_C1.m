@@ -10,13 +10,11 @@ iE_max = 7;    % maximum iE
 % inds of end of half cycles
 % e.g., [4,8,11,14] means load step 1-4 = compression cycle 1, 4-8=tension
 % cycle 1, 8-11=compression cycle 2, 11-14 = tension cycle 2, ...
-inds_half_cycle = [4,8,11,14];
+inds_half_cycle = [4,8];
 
 % strain gage reading of each load step
 strain_sg = [0, -0.0075, -0.015, -0.025, ...
-    -0.023, -0.017, -0.0075, 0.002, ...
-    -0.0075, -0.015, -0.025, ...
-    -0.017, -0.0075, 0];
+    -0.023, -0.017, -0.0075, 0];
 
 % grain IDs of a few selected grains at each load step, used for alignment
 grain_pair = [
