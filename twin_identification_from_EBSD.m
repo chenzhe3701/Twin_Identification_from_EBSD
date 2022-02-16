@@ -11,7 +11,6 @@ assert(exist('sample_name','var')==1);
 assert(exist('iE_max','var')==1);
 assert(exist('grain_pair','var')==1);
 assert(exist('ID_list','var')==1);
-assert(exist('tolerance_cell','var')==1);
 assert(exist('ID_merge_list','var')==1);
 
 save_dir = fullfile(working_dir, 'analysis');
@@ -210,7 +209,6 @@ close all;
 % run the .m file as setting file to load variables
 run(fullfile(p_setting,f_setting));
 assert(exist('ID_list','var')==1);
-assert(exist('tolerance_cell','var')==1);
 
 for iE = []%0:iE_max
     iB = iE + 1;
@@ -352,7 +350,7 @@ for iE = 0:iE_max
         phi1_local = phi1(indR_min:indR_max, indC_min:indC_max);
         phi_local = phi(indR_min:indR_max, indC_min:indC_max);
         phi2_local = phi2(indR_min:indR_max, indC_min:indC_max);
-        boundary_local = boundary_new(indR_min:indR_max, indC_min:indC_max);
+        boundary_local = find_one_boundary_from_ID_matrix(ID_local);
 
         % for each pixel, find max misorientation within its four neighbors
         misorientation_max = calculate_max_local_misorientation_hcp(phi1_local, phi_local, phi2_local);
@@ -363,12 +361,30 @@ for iE = 0:iE_max
         if (length(mask_cell{iB})>=iN) && ~isempty(mask_cell{iB}{iN})
             mask = mask_cell{iB}{iN};
         else
-            hf2 = myplotm(boundary_local,'x',x_local,'y', y_local);
-            label_map_with_ID(x_local,y_local,ID_local, gcf, ID_current, 'r');
-            hf3 = myplotm(misorientation_max);
-            caxism([tolerance_cell{iB}(iN), 100]);
-            h = drawpolygon;
-            customWait(h);
+            try
+                map_t = -auto_grain(ID_c_local);
+                map_t(boundary_local==1)=0;
+                hf2 = myplotm(map_t, 'x',x_local, 'y',y_local);
+                caxism([-5, 0]);
+                cmap = colormap;
+                cmap(end,:) = [1 1 1];
+                colormap(cmap);
+                % hf2 = myplotm(boundary_local,'x',x_local,'y', y_local);
+                label_map_with_ID(x_local,y_local,ID_local, gcf, ID_current, 'r');
+                title(['Draw mask to cover child grain boundaries to divide grain.',newline,'If child grain boundaries cannot be used, X to proceed.']);
+                h = drawpolygon;
+                customWait(h);
+            catch
+                hf2 = myplotm(map_t, 'x',x_local, 'y',y_local);
+                caxism([-5, 0]);
+                cmap = colormap;
+                cmap(end,:) = [1 1 1];
+                colormap(cmap);
+                hf3 = myplotm(misorientation_max);
+                caxism([5, 100]);
+                h = drawpolygon;
+                customWait(h);
+            end
             mask = h.createMask();
         end
 
