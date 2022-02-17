@@ -23,7 +23,8 @@ for icell = 1:9%length(cells)
     assert(exist('grain_pair','var')==1);
     assert(exist('ID_list','var')==1);
     assert(exist('ID_merge_list','var')==1);
-    
+    assert(exist('min_gs','var')==1);
+
     save_dir = fullfile(working_dir, 'analysis');
     mkdir(save_dir);
     %% Step-1: load .txt grain files, align_euler_to_sample and save as .mat
@@ -755,6 +756,9 @@ for icell = 1:9%length(cells)
     end
     
     %% part-5: find out variants
+    run(fullfile(p_setting,f_setting));
+    assert(exist('min_gs','var')==1);
+
     po_tolerance_angle = 10; % if child grain has misorientation < po_tolerance_angle with undeformed parent grain, it is considered as having parent orientation
     twin_tolerance_angle = 10;  % if child grain has misorientation < twin_tolerance_angle to a potential twin variant, it is identified as that twin variant
     for iE = 0:iE_max
@@ -873,15 +877,15 @@ for icell = 1:9%length(cells)
                     [min_val, iVariant_child] = min(abs(misorientation));    % find out
                     
                     % ==============> The child grain may be a twin area containing multiple variants. Assume the child orientation represents at least one true twin orientation
-                    % Ff small enough, the child grain should be a twin. Do point-wise analysis
-                    if min_val < twin_tolerance_angle
+                    % If small enough, the child grain should be a twin. Do point-wise analysis
+                    if min_val < twin_tolerance_angle && sum(ind) >= min_gs
                         ID_variant_grain_wise(ID_c == id) = iVariant_child; % grain-wise variant map
-                        
+
                         ind_list = find(ID_c==id);
                         for kk = 1:length(ind_list)
                             ind = ind_list(kk);
                             euler_c = [phi1_c(ind), phi_c(ind), phi2_c(ind)];
-                            
+
                             misorientation = [];
                             % compare [euler of this pixel]  vs  [euler of the iTwin system of the parent orientation]
                             for kk = 1:6
@@ -892,6 +896,10 @@ for icell = 1:9%length(cells)
                             Misorientation_point_wise(ind) = miso;
                             ID_variant_point_wise(ind) = iVariant;
                         end
+                    elseif sum(ind) < min_gs
+                        warning('child grain smaller than min_gs, not considered as a twin');
+                        str = sprintf('iE = %d, ii = %d, ID_parent = %d, jj = %d, ID_twin = %d \n', iE, ii, id_p, jj, id);
+                        disp(str);
                     else
                         warning('Twin grain misorientation with parent orientation > 10 deg, rejected as a variant:');
                         str = sprintf('iE = %d, ii = %d, ID_parent = %d, jj = %d, ID_twin = %d \n', iE, ii, id_p, jj, id);

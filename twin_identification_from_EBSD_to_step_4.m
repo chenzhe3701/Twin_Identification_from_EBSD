@@ -209,7 +209,6 @@ close all;
 % run the .m file as setting file to load variables
 run(fullfile(p_setting,f_setting));
 assert(exist('ID_list','var')==1);
-assert(exist('tolerance_cell','var')==1);
 
 for iE = []%0:iE_max
     iB = iE + 1;
@@ -382,7 +381,9 @@ for iE = 0:iE_max
                 cmap(end,:) = [1 1 1];
                 colormap(cmap);
                 hf3 = myplotm(misorientation_max);
-                caxism([5, 100]);
+                caxism([3, 100]);
+                set(gca,'xlim', get(gca,'xlim')+[-1 1]);    % need to do this for Matlab r2021b as it does not allow to drawpolygon outside of limits
+                set(gca,'ylim', get(gca,'ylim')+[-1 1]);
                 h = drawpolygon;
                 customWait(h);
             end

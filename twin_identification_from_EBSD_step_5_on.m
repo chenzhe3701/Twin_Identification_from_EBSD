@@ -17,6 +17,9 @@ save_dir = fullfile(working_dir, 'analysis');
 mkdir(save_dir);
 
 %% part-5: find out variants
+run(fullfile(p_setting,f_setting));
+assert(exist('min_gs','var')==1);
+
 po_tolerance_angle = 10; % if child grain has misorientation < po_tolerance_angle with undeformed parent grain, it is considered as having parent orientation
 twin_tolerance_angle = 10;  % if child grain has misorientation < twin_tolerance_angle to a potential twin variant, it is identified as that twin variant
 for iE = 0:iE_max
@@ -135,8 +138,8 @@ for iE = 0:iE_max
                 [min_val, iVariant_child] = min(abs(misorientation));    % find out
 
                 % ==============> The child grain may be a twin area containing multiple variants. Assume the child orientation represents at least one true twin orientation
-                % Ff small enough, the child grain should be a twin. Do point-wise analysis
-                if min_val < twin_tolerance_angle
+                % If small enough, the child grain should be a twin. Do point-wise analysis
+                if min_val < twin_tolerance_angle && sum(ind) >= min_gs
                     ID_variant_grain_wise(ID_c == id) = iVariant_child; % grain-wise variant map
 
                     ind_list = find(ID_c==id);
@@ -154,6 +157,10 @@ for iE = 0:iE_max
                         Misorientation_point_wise(ind) = miso;
                         ID_variant_point_wise(ind) = iVariant;
                     end
+                elseif sum(ind) < min_gs
+                    warning('child grain smaller than min_gs, not considered as a twin');
+                    str = sprintf('iE = %d, ii = %d, ID_parent = %d, jj = %d, ID_twin = %d \n', iE, ii, id_p, jj, id);
+                    disp(str);
                 else
                     warning('Twin grain misorientation with parent orientation > 10 deg, rejected as a variant:');
                     str = sprintf('iE = %d, ii = %d, ID_parent = %d, jj = %d, ID_twin = %d \n', iE, ii, id_p, jj, id);
