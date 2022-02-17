@@ -10,9 +10,9 @@ cells = {'variables_Mg4Al_A1.m','variables_Mg4Al_A2.m','variables_Mg4Al_B1.m', .
 %% load setup
 % clear; clc; close all;
 % [f_setting,p_setting] = uigetfile('','select setting file (.m format)');
-for icell = 1:9%length(cells)
+for icell = 1:length(cells)
     close all;
-    f_setting = cells{icell};  
+    f_setting = cells{icell}  
     
     %% run the .m file as setting file to load variables
     run(fullfile(p_setting,f_setting));
@@ -393,7 +393,7 @@ for icell = 1:9%length(cells)
                     cmap(end,:) = [1 1 1];
                     colormap(cmap);
                     hf3 = myplotm(misorientation_max);
-                    caxism([5, 100]);
+                    caxism([3, 100]);
                     h = drawpolygon;
                     customWait(h);
                 end
@@ -878,7 +878,8 @@ for icell = 1:9%length(cells)
                     
                     % ==============> The child grain may be a twin area containing multiple variants. Assume the child orientation represents at least one true twin orientation
                     % If small enough, the child grain should be a twin. Do point-wise analysis
-                    if min_val < twin_tolerance_angle && sum(ind) >= min_gs
+                    inds = ID_c==id;
+                    if min_val < twin_tolerance_angle && sum(inds) >= min_gs
                         ID_variant_grain_wise(ID_c == id) = iVariant_child; % grain-wise variant map
 
                         ind_list = find(ID_c==id);
@@ -896,7 +897,7 @@ for icell = 1:9%length(cells)
                             Misorientation_point_wise(ind) = miso;
                             ID_variant_point_wise(ind) = iVariant;
                         end
-                    elseif sum(ind) < min_gs
+                    elseif sum(inds) < min_gs
                         warning('child grain smaller than min_gs, not considered as a twin');
                         str = sprintf('iE = %d, ii = %d, ID_parent = %d, jj = %d, ID_twin = %d \n', iE, ii, id_p, jj, id);
                         disp(str);
@@ -979,6 +980,7 @@ for icell = 1:9%length(cells)
     save(fullfile(save_dir, 'twin_pct.mat'), 'twinPct', 'tAvg', 'tStd');
     
     %% part-7, calculate EBSD estimated strain
+    clear strain_ebsd;
     load(fullfile(save_dir,'geotrans_and_id_link.mat'),'tforms');
     for iE = 0:iE_max
         iB = iE+1;
@@ -989,12 +991,14 @@ for icell = 1:9%length(cells)
             strain_ebsd(iB) = 0;
         end
     end
-    str = [sprintf('strain_ebsd = ['), sprintf('%.4f, ',strain_ebsd(1:4)), newline, ...
-        sprintf('%.4f, ',strain_ebsd(5:8)), newline, ...
-        sprintf('%.4f, ',strain_ebsd(9:11)), newline, ...
-        sprintf('%.4f, ',strain_ebsd(12:13)), sprintf('%.4f];',strain_ebsd(14))];
-    disp(str);
-    
+    try
+        str = [sprintf('strain_ebsd = ['), sprintf('%.4f, ',strain_ebsd(1:4)), newline, ...
+            sprintf('%.4f, ',strain_ebsd(5:8)), newline, ...
+            sprintf('%.4f, ',strain_ebsd(9:11)), newline, ...
+            sprintf('%.4f, ',strain_ebsd(12:13)), sprintf('%.4f];',strain_ebsd(14))];
+        disp(str);
+    catch
+    end
     % run the .m file as setting file to load variables
     run(fullfile(p_setting,f_setting));
     assert(exist('strain_sg','var')==1);

@@ -138,7 +138,7 @@ while iN <= N
             cmap(end,:) = [1 1 1];
             colormap(cmap);            
             hf3 = myplotm(misorientation_max);
-            caxism([5, 100]);
+            caxism([3, 100]);
             h = drawpolygon;
             customWait(h);
         end        

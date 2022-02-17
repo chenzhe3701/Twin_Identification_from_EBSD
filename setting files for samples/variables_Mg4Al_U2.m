@@ -3,6 +3,7 @@
 working_dir = 'E:\zhec umich Drive\2021-02-26 Mg4Al_U2 EBSD';
 sample_name = 'Mg4Al_U2';
 iE_max = 13;    % maximum iE
+min_gs = 16;    % min grain size in pixels
 
 % grain file format example:
 % 'sample_name grain_file_type_1 iE=0.txt'
