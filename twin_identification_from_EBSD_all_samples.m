@@ -1,15 +1,16 @@
 
 % run twin_identification_from_EBSD for all samples of interest
 
-p_setting = 'D:\p\m\Twin_Identification_from_EBSD'
-cells = {'variables_Mg4Al_A1.m','variables_Mg4Al_A2.m','variables_Mg4Al_B1.m','variables_Mg4Al_B2.m','variables_Mg4Al_C3.m','variables_Mg4Al_U2.m', ...
+p_setting = 'D:\p\m\Twin_Identification_from_EBSD\setting files for samples';
+cells = {'variables_Mg4Al_A1.m','variables_Mg4Al_A2.m','variables_Mg4Al_B1.m', ...
+    'variables_Mg4Al_B2.m','variables_Mg4Al_C3.m','variables_Mg4Al_U2.m', ...
     'variables_UM129_Mg_C1.m','variables_UM129_Mg_C2.m','variables_UM129_Mg_C3.m', ...
     'variables_UM134_Mg_C1.m','variables_UM134_Mg_C2.m','variables_UM134_Mg_C3.m', 'variables_Mg4Al_C1.m'};
 
 %% load setup
 % clear; clc; close all;
 % [f_setting,p_setting] = uigetfile('','select setting file (.m format)');
-for icell = 1:length(cells)
+for icell = 1:9%length(cells)
     close all;
     f_setting = cells{icell};  
     
@@ -368,7 +369,7 @@ for icell = 1:length(cells)
             % if not previously processed, process, save the mask
             % plot the max misorientation map, use mask to select the region where you
             % want to add the misorientation boundary as a new boundary
-            if (length(mask_cell{iB})>=iN) && ~isempty(mask_cell{iB}{iN})
+            if (length(mask_cell{iB})>=iN) && ~isempty(mask_cell{iB}{iN}) && length(mask_cell{iB}{iN}(:))==length(ID_local(:))
                 mask = mask_cell{iB}{iN};
             else
                 try

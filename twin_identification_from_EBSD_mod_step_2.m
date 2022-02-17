@@ -115,7 +115,7 @@ while iN <= N
     % if not previously processed, process, save the mask
     % plot the max misorientation map, use mask to select the region where you
     % want to add the misorientation boundary as a new boundary
-    if (length(mask_cell{iB})>=iN) && ~isempty(mask_cell{iB}{iN})
+    if (length(mask_cell{iB})>=iN) && ~isempty(mask_cell{iB}{iN}) && length(mask_cell{iB}{iN}(:))==length(ID_local(:))
         mask = mask_cell{iB}{iN};
     else        
         try
