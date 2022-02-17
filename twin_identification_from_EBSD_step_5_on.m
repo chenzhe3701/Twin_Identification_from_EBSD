@@ -140,7 +140,7 @@ for iE = 0:iE_max
                 % ==============> The child grain may be a twin area containing multiple variants. Assume the child orientation represents at least one true twin orientation
                 % If small enough, the child grain should be a twin. Do point-wise analysis
                 inds = ID_c==id;
-                if min_val < twin_tolerance_angle && sum(inds) >= min_gs
+                if min_val < twin_tolerance_angle && sum(inds(:)) >= min_gs
                     ID_variant_grain_wise(ID_c == id) = iVariant_child; % grain-wise variant map
 
                     ind_list = find(ID_c==id);
@@ -158,7 +158,7 @@ for iE = 0:iE_max
                         Misorientation_point_wise(ind) = miso;
                         ID_variant_point_wise(ind) = iVariant;
                     end
-                elseif sum(inds) < min_gs
+                elseif sum(inds(:)) < min_gs
                     warning('child grain smaller than min_gs, not considered as a twin');
                     str = sprintf('iE = %d, ii = %d, ID_parent = %d, jj = %d, ID_twin = %d \n', iE, ii, id_p, jj, id);
                     disp(str);
