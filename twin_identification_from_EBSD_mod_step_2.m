@@ -127,7 +127,7 @@ while iN <= N
             cmap(end,:) = [1 1 1];
             colormap(cmap);
             % hf2 = myplotm(boundary_local,'x',x_local,'y', y_local);
-            label_map_with_ID(x_local,y_local,ID_local, gcf, ID_current, 'r');
+            label_map_with_ID(x_local,y_local,ID_local, gcf, ID_current, 'r',12,1,0);
             title(['Draw mask to cover child grain boundaries to divide grain.',newline,'If child grain boundaries cannot be used, X to proceed.']);
             h = drawpolygon;
             customWait(h);
