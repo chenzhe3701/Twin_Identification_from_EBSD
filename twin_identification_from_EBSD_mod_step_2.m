@@ -24,7 +24,8 @@ assert(exist('ID_list','var')==1);
 assert(exist('ID_merge_list','var')==1);
 
 % target [iE,iD] list
-iE_ID_list = [10,5 ];
+iE_ID_list = [2,57;
+    3,62];
 iN_target = [];
 
 iE = 0;
@@ -92,7 +93,7 @@ while iN <= N
         mask_cell{iB}{iN} = [];
     end
     
-    ind_local = ismember(ID, ID_current); %ismember(ID, [ID_current,ID_neighbor]);
+    ind_local = ismember(ID_updated, ID_current); %ismember(ID, [ID_current,ID_neighbor]);
     indC_min = find(sum(ind_local, 1), 1, 'first');
     indC_max = find(sum(ind_local, 1), 1, 'last');
     indR_min = find(sum(ind_local, 2), 1, 'first');

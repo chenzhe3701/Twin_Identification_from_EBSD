@@ -336,7 +336,7 @@ for iE = 0:iE_max
         disp(str);
         % example for debug, iE=1, grain 57
         ID_current = ID_list{iB}(iN);
-        ind_local = ismember(ID, ID_current); %ismember(ID, [ID_current,ID_neighbor]);
+        ind_local = ismember(ID_updated, ID_current); %ismember(ID, [ID_current,ID_neighbor]);
         indC_min = find(sum(ind_local, 1), 1, 'first');
         indC_max = find(sum(ind_local, 1), 1, 'last');
         indR_min = find(sum(ind_local, 2), 1, 'first');
@@ -370,7 +370,7 @@ for iE = 0:iE_max
                 cmap(end,:) = [1 1 1];
                 colormap(cmap);
                 % hf2 = myplotm(boundary_local,'x',x_local,'y', y_local);
-                label_map_with_ID(x_local,y_local,ID_local, gcf, ID_current, 'r');
+                label_map_with_ID(x_local,y_local,ID_local, gcf, ID_current, 'r',12,1,0);
                 title(['Draw mask to cover child grain boundaries to divide grain.',newline,'If child grain boundaries cannot be used, X to proceed.']);
                 h = drawpolygon;
                 customWait(h);
