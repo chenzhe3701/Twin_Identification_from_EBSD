@@ -382,7 +382,7 @@ for iE = 0:iE_max
                 cmap(end,:) = [1 1 1];
                 colormap(cmap);
                 hf3 = myplotm(misorientation_max);
-                caxism([3, 100]);
+                caxism([5, 100]);
                 h = drawpolygon;
                 customWait(h);
             end

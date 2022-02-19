@@ -24,8 +24,7 @@ assert(exist('ID_list','var')==1);
 assert(exist('ID_merge_list','var')==1);
 
 % target [iE,iD] list
-iE_ID_list = [2,57;
-    3,62];
+iE_ID_list = [3,132];
 iN_target = [];
 
 iE = 0;
@@ -138,7 +137,7 @@ while iN <= N
             cmap(end,:) = [1 1 1];
             colormap(cmap);            
             hf3 = myplotm(misorientation_max);
-            caxism([3, 100]);
+            caxism([5, 100]);
             h = drawpolygon;
             customWait(h);
         end        

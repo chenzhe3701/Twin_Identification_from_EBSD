@@ -381,7 +381,7 @@ for iE = 0:iE_max
                 cmap(end,:) = [1 1 1];
                 colormap(cmap);
                 hf3 = myplotm(misorientation_max);
-                caxism([3, 100]);
+                caxism([5, 100]);
                 set(gca,'xlim', get(gca,'xlim')+[-1 1]);    % need to do this for Matlab r2021b as it does not allow to drawpolygon outside of limits
                 set(gca,'ylim', get(gca,'ylim')+[-1 1]);
                 h = drawpolygon;

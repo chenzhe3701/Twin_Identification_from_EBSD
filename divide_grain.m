@@ -46,6 +46,12 @@ else
     end
 end
 
+% We need to temporarily modify 'ID_c_local', so that ID_c outside of id_p
+% area will be assigned to something differnet. The purpose is to make it
+% as if ID_c is immediately modified after a parent grain is modified, so
+% that each child grain always belongt only one parent grain.
+ID_c_local(ID_local~=id_p) = nan;
+
 % child grains that overlap with the parent grain
 id_c_list = unique(ID_c_local(ismember(ID_local, id_p)));
 groupA = [];
@@ -106,8 +112,30 @@ else
         boundary_local_new = (misorientation_max > tolerance)&(mask==1);
         boundary_local_new = double(ID_local~=id_p | boundary_local_new);
         ID_local_temp = find_ID_map_from_boundary_map(boundary_local_new);
-        if length(unique(ID_local_temp(:))) == 2
-            break;
+        
+        % We want 2 grains, but need another check: new grains cannot be
+        % fully located under mask, otherwise it is formed by a local
+        % boundary hole
+        
+        if length(unique(ID_local_temp(:))) == 2   
+            new_grains_valid = true;    % initialize
+            for jj=1:2
+                % size of new grain
+                grain_temp = (ID_local_temp==jj)&(ID_local==id_p);   % copy grain 
+                grain_temp(boundary_local_new==1)=0; % remove boundary pts
+                sz_grain = sum(grain_temp(:)); % size of grain
+                sz_under_mask = sum(grain_temp(:)==1 & mask(:)==1);  % size of grain under mask
+                if sz_grain==sz_under_mask
+                    % not a valid grain
+                    new_grains_valid = false;
+                end
+            end
+        else
+            new_grains_valid = false;
+        end
+        
+        if new_grains_valid
+            break;  
         elseif tolerance>0.5
             tolerance = tolerance - 0.5;
         else
