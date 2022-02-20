@@ -211,7 +211,7 @@ close all;
 run(fullfile(p_setting,f_setting));
 assert(exist('ID_list','var')==1);
 
-for iE = []%0:iE_max
+for iE = 0:iE_max
     iB = iE + 1;
     ID_iB_to_1 = ID_cell{iB};
     f = myplot(x,y,auto_grain(ID_iB_to_1)-6,boundary_all);
@@ -242,7 +242,7 @@ end
 run(fullfile(p_setting,f_setting));
 assert(exist('ID_merge_list','var')==1);
 
-for iE = []%0:iE_max
+for iE = 0:iE_max
     iB = iE + 1;
     ID_iB_to_1 = ID_cell{iB};
     f = myplot(x,y,auto_grain(ID_iB_to_1)-6,boundary_all);
@@ -373,6 +373,7 @@ for iE = 0:iE_max
                 % hf2 = myplotm(boundary_local,'x',x_local,'y', y_local);
                 label_map_with_ID(x_local,y_local,ID_local, gcf, ID_current, 'r',12,1,0);
                 title(['Draw mask to cover child grain boundaries to divide grain.',newline,'If child grain boundaries cannot be used, X to proceed.']);
+                set(gca,'xlim',get(gca,'xlim')+[-1 1], 'ylim',get(gca,'ylim')+[-1 1]);  % matlab r2021 does not auto allow drawing outside of x/ylim, so need to increase limits.
                 h = drawpolygon;
                 customWait(h);
             catch
@@ -383,6 +384,7 @@ for iE = 0:iE_max
                 colormap(cmap);
                 hf3 = myplotm(misorientation_max);
                 caxism([5, 100]);
+                set(gca,'xlim',get(gca,'xlim')+[-1 1], 'ylim',get(gca,'ylim')+[-1 1]);  % matlab r2021 does not auto allow drawing outside of x/ylim, so need to increase limits.
                 h = drawpolygon;
                 customWait(h);
             end
