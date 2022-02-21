@@ -41,20 +41,20 @@ grain_pair = [
 % tolerance_cell{iB}, the tolerance angle for these grains
 % Note: if a grain needs to be divided into 3 grains, select it twice. The
 % larger grain will keep the original grain ID.
-ID_list{1} = [77,99]; 
-ID_list{2} = [32,81]; 
-ID_list{3} = [25]; 
-ID_list{4} = [12,20,5,25,61]; 
-ID_list{5} = [4,26,62]; 
-ID_list{6} = [27,15,5,32]; 
-ID_list{7} = [25,83]; 
-ID_list{8} = [23,103]; 
-ID_list{9} = [27,108]; 
-ID_list{10} = [28,33,68,103]; 
-ID_list{11} = [22,13,5,65]; 
-ID_list{12} = [22,13,27,62]; 
-ID_list{13} = [13]; 
-ID_list{14} = [80,101]; 
+ID_list{1} = [77,99,88]; 
+ID_list{2} = [32,81,92]; 
+ID_list{3} = [25,94]; 
+ID_list{4} = [12,20,5,25,61,87]; 
+ID_list{5} = [4,26,62,21,87]; 
+ID_list{6} = [27,15,5,32,93]; 
+ID_list{7} = [25,83,93]; 
+ID_list{8} = [23,103,92]; 
+ID_list{9} = [27,108,97]; 
+ID_list{10} = [28,33,68,103,92]; 
+ID_list{11} = [22,13,5,65,92]; 
+ID_list{12} = [22,13,27,62,89]; 
+ID_list{13} = [13,93]; 
+ID_list{14} = [80,101,90]; 
 
 % ID_merge_list{iB=iE+1} = [g1, g2; g3 g4; ...]
 % merge g1 into g2, g3 into g4, ...
