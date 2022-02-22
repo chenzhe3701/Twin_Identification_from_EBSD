@@ -60,7 +60,7 @@ ID_list{14} = [46,76];
 % merge g1 into g2, g3 into g4, ...
 ID_merge_list{1} = [];
 ID_merge_list{2} = [];
-ID_merge_list{3} = [];
+ID_merge_list{3} = [88,91];
 ID_merge_list{4} = [];
 ID_merge_list{5} = [];
 ID_merge_list{6} = [];
